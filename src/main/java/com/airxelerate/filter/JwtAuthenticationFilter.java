@@ -1,5 +1,7 @@
 package com.airxelerate.filter;
 
+import com.airxelerate.entity.RefreshToken;
+import com.airxelerate.service.RefreshTokenService;
 import com.airxelerate.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -23,6 +26,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtils;
     private final UserDetailsService userDetailsService;
+     private final RefreshTokenService refreshTokenService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -36,9 +40,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         jwt = authHeader.split(" ")[1].trim();
         userEmail = jwtUtils.extractUsername(jwt);
-        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+
+        // we can use cache this case (we have many operations on database)
+        Optional<RefreshToken> refreshToken = this.refreshTokenService.findByToken(jwt);
+        if (refreshToken.isPresent() &&
+                userEmail != null &&
+                SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-            if (jwtUtils.isTokenValid(jwt, userDetails) ) {
+
+            if (userDetails!=null && jwtUtils.isTokenValid(jwt, userDetails) ) {
                 log.info("user details:    {}", userDetails.getAuthorities());
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,

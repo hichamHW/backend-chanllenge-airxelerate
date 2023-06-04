@@ -1,7 +1,8 @@
 package com.airxelerate.dto.request;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,10 +11,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class AuthRequest {
-    @NotBlank
-    @Schema(name = "user_name")
+    @NotNull(message = "user_name not null")
+    @NotBlank(message = "user_name not blank")
+    @JsonProperty( "user_name")
     private String userName;
-    @NotBlank
-    @Schema(name = "password")
+    @NotNull(message = "password not null")
+    @NotBlank(message = "password not blank")
+    @JsonProperty( "password")
     private String password;
 }

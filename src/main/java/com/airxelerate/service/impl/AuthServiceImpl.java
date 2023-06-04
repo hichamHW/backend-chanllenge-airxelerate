@@ -53,7 +53,7 @@ public class AuthServiceImpl implements AuthService {
                 .orElseThrow(()-> new EntityNotFoundException("User : "+authRequest.getUserName()+" not found !" ));
         String token = jwtUtil.generateToken(user);
         String refreshToken = jwtUtil.generateRefreshToken(user);
-        refreshTokenService.create(user, token);
+        refreshTokenService.create(user, token,refreshToken);
         return AuthenticatedResponse.builder()
                 .token(token)
                 .refreshToken(refreshToken)
@@ -82,15 +82,16 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public String refreshToken(TokenRefreshRequest tokenRefreshRequest) {
         String requestRefreshToken = tokenRefreshRequest.getRefreshToken();
-        return this.refreshTokenService.findByToken(requestRefreshToken)
+        return this.refreshTokenService.findByRefreshToken(requestRefreshToken)
                 .map(refreshTokenService::verifyExpiration)
-                .map(RefreshToken::getUser)
-                .map(user -> {
-                    String token = jwtUtil.generateToken(user);
+                .map(refreshToken -> {
+                    String token = jwtUtil.generateToken(refreshToken.getUser());
+                    refreshToken.setToken(token);
+                    refreshTokenService.update(refreshToken);
                     return token;
                 })
                 .orElseThrow(() -> {
-                    log.error("Token {} not found !", tokenRefreshRequest);
+                    log.error("Refresh token {} not found !", tokenRefreshRequest);
                    return new EntityNotFoundException("Token:  " + tokenRefreshRequest + " not found !");
                 });
     }

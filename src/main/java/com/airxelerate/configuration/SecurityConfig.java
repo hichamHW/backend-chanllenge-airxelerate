@@ -30,7 +30,7 @@ public class SecurityConfig  {
     private final AuthenticationProvider authenticationProvider;
     private final LogoutHandler logoutHandler;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
-    private final CustomBearerTokenAccessDeniedHandler customBearerTokenAccessDeniedHandler;
+   /// private final CustomBearerTokenAccessDeniedHandler customBearerTokenAccessDeniedHandler;
     private static final  String[] publicPaths = new String[]{
             "/api/v1/authentication/**",
             "/v2/api-docs",
@@ -43,6 +43,8 @@ public class SecurityConfig  {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
        return http
+               .exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint)
+               .and()
                 .authorizeHttpRequests(authorizeHttpRequest-> authorizeHttpRequest
                         .requestMatchers(publicPaths)
                         .permitAll()
@@ -50,11 +52,8 @@ public class SecurityConfig  {
                         .authenticated()
                 )
                 .authenticationProvider(authenticationProvider)
-                .httpBasic(httpBasic-> httpBasic.authenticationEntryPoint(customAuthenticationEntryPoint))
-                .oauth2ResourceServer(oauth-> oauth.accessDeniedHandler(customBearerTokenAccessDeniedHandler))
                 .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .headers(header-> header.frameOptions().disable())
                 .csrf(csrf-> csrf.disable())
                 .logout(log-> log
                         .logoutUrl("/api/v1/authentication/logout")

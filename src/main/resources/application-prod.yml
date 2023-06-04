@@ -1,0 +1,27 @@
+spring: ###change config to env production
+  h2:
+    console:
+      path: /h2-console
+      enabled: true
+  data:
+    jpa:
+      repositories:
+        bootstrap-mode: deferred
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password: password
+    driver-class-name: org.h2.Driver
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+    default-property-inclusion: non_null
+    deserialization:
+      fail-on-unknown-properties: false
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 1000
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true

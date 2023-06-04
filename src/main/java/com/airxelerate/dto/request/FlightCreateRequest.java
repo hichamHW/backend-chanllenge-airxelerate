@@ -2,44 +2,58 @@ package com.airxelerate.dto.request;
 
 import com.airxelerate.entity.Flight;
 import com.airxelerate.entity.TypeFlight;
+import com.airxelerate.util.GeneratorUtil;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class FlightCreateRequest {
-    @NotBlank
-    private Long code;
+    @NotNull(message = "price not null")
     @Min(0)
+    @JsonProperty( "price")
     private BigDecimal price;
-    @NotBlank
-    private String from;
-    @NotBlank
-    private String to;
-    @NotBlank
+    @NotNull(message = "origin not null")
+    @NotBlank(message = "origin not blank")
+    @JsonProperty( "origin")
+    private String origin;
+    @NotNull(message = "destination not null")
+    @NotBlank(message = "destination not blank")
+    @JsonProperty( "destination")
+    private String destination;
+    @NotNull(message = "departure not null")
+    @JsonProperty( "departure")
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime departure;
+    @NotNull(message = "arrival not null")
+    @JsonProperty( "arrival")
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime arrival;
-    private TypeFlight type;
 
     public Flight toEntity(){
         return new Flight(
-                11L,
+                GeneratorUtil.generateRandom4DigitNumber(),
                 this.price,
-                this.from,
-                this.to,
+                GeneratorUtil.getRandomCarrierCode(),
+                this.origin,
+                this.destination,
                 this.departure,
-                this.arrival,
-                this.type
+                this.arrival
         );
     }
 }

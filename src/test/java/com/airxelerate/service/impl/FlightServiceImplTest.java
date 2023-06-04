@@ -52,8 +52,8 @@ class FlightServiceImplTest {
             verify(flightRepository, times(1)).save(any(Flight.class));
             Assertions.assertEquals(createRequest.getArrival(), response.getArrival());
             Assertions.assertEquals(createRequest.getDeparture(), response.getDeparture());
-            Assertions.assertEquals(createRequest.getFrom(), response.getFrom());
-            Assertions.assertEquals(createRequest.getTo(), response.getTo());
+            Assertions.assertEquals(createRequest.getOrigin(), response.getOrigin());
+            Assertions.assertEquals(createRequest.getDestination(), response.getDestination());
         }
 
         @Test

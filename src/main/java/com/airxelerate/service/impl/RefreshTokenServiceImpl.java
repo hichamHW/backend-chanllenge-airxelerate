@@ -26,12 +26,23 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     public Optional<RefreshToken> findByToken(String token) {
         return this.refreshTokenRepository.findByToken(token);
     }
+    @Override
+    public Optional<RefreshToken> findByRefreshToken(String token) {
+        return this.refreshTokenRepository.findByRt(token);
+    }
 
     @Override
-    public RefreshToken create(User user,String token) {
+   public RefreshToken update(RefreshToken token){
+        RefreshToken saved =  this.refreshTokenRepository.save(token);
+        return saved;
+    }
+
+    @Override
+    public RefreshToken create(User user,String token,String rToken) {
         RefreshToken toSave = RefreshToken
                 .builder()
                 .token(token)
+                .rt(rToken)
                 .expirationDate( LocalDateTime.now().plusSeconds(REFRESH_TOKEN_EXPIRATION_TIME))
                 .user(user)
                 .build();

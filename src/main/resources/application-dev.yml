@@ -1,4 +1,4 @@
-spring:
+spring:  ###change config to env develpement
   h2:
     console:
       path: /h2-console

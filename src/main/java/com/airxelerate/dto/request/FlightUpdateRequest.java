@@ -2,8 +2,13 @@ package com.airxelerate.dto.request;
 
 import com.airxelerate.entity.Flight;
 import com.airxelerate.entity.TypeFlight;
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,44 +20,43 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class FlightUpdateRequest {
-    @NotBlank
-    @Schema(name = "id")
+    @NotNull(message = "id not null")
+    @JsonProperty("id")
     private UUID id;
-    @NotBlank
-    @Schema(name = "code")
-    private Long code;
-    @NotBlank
-    @Schema(name = "price")
+    @NotNull(message = "price not null")
+    @JsonProperty("price")
     private BigDecimal price;
-    @NotBlank
-    @Schema(name = "from")
-    private String from;
-    @NotBlank
-    @Schema(name = "to")
-    private String to;
-    @NotBlank
-    @Schema(name = "departure")
+    @NotNull(message = "origin not null")
+    @NotBlank(message = "origin not blank")
+    @JsonProperty( "origin")
+    private String origin;
+    @NotNull(message = "destination not null")
+    @NotBlank(message = "destination not blank")
+    @JsonProperty( "destination")
+    private String destination;
+    @NotNull(message = "departure not null")
+    @JsonProperty("departure")
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime departure;
-    @NotBlank
-    @Schema(name = "arrival")
+    @NotNull(message = "arrival not null")
+    @JsonProperty("arrival")
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime arrival;
-    @NotBlank
-    @Schema(name = "type")
-    private TypeFlight type;
-    @NotBlank
-    @Schema(name = "version")
+    @NotNull(message = "version not null")
+    @JsonProperty("version")
     private Long version;
 
     public Flight toEntity(){
         Flight flight = new Flight(
-                11L,
+                null,
                 this.price,
-                this.from,
-                this.to,
+                null,
+                this.origin,
+                this.destination,
                 this.departure,
-                this.arrival,
-                this.type
+                this.arrival
         );
         flight.setId(this.id);
         flight.setVersion(this.version);

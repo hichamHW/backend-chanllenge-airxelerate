@@ -2,8 +2,9 @@ package com.airxelerate.dto.request;
 
 import com.airxelerate.entity.Role;
 import com.airxelerate.entity.User;
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,19 +16,23 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 public class UserCreateRequest {
-    @NotBlank
+    @NotBlank(message = "full_name not blank")
+    @NotNull(message = "full_name not null")
     @Size(min = 3, max = 20)
-    @Schema(name = "full_name")
+    @JsonProperty( "full_name")
     private String fullName;
-    @NotBlank
+    @NotBlank(message = "user_name not blank")
+    @NotNull(message = "user_name not null")
     @Size(min = 3, max = 20)
-    @Schema(name = "user_name")
+    @JsonProperty( "user_name")
     private String userName;
-    @Schema(name = "roles")
+    @NotNull(message = "roles not null")
+    @JsonProperty( "roles")
     private Set<Role> roles;
-    @NotBlank
+    @NotBlank(message = "password not blank")
+    @NotNull(message = "password not null")
     @Size(min = 6, max = 40)
-    @Schema(name = "password")
+    @JsonProperty( "password")
     private String password;
 
     public User toEntity(){

@@ -8,11 +8,13 @@ import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AuthorizationServiceException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.naming.AuthenticationException;
 import java.time.LocalDateTime;
@@ -68,7 +70,7 @@ public class GlobalHandlerException {
         ));
     }
 
-    @ExceptionHandler(AuthorizationServiceException.class)
+    @ExceptionHandler({AuthorizationServiceException.class, InsufficientAuthenticationException.class})
     public ResponseEntity<MessageErrorResponse> handleAuthorizationException(AuthorizationServiceException ex, WebRequest request) {
         log.error("catch handleAuthorizationException error: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new MessageErrorResponse(
@@ -79,7 +81,10 @@ public class GlobalHandlerException {
         ));
     }
 
-    @ExceptionHandler({MethodArgumentNotValidException.class,IllegalStateException.class})
+    @ExceptionHandler({MethodArgumentNotValidException.class,
+            IllegalStateException.class,
+            IllegalStateException.class,
+            MethodArgumentTypeMismatchException.class})
     public ResponseEntity<MessageErrorResponse> handleBindException(MethodArgumentNotValidException ex, WebRequest request) {
         log.error("catch handleBindException  error: {}", ex.getBindingResult());
         Set<String> errors = ex.getBindingResult()

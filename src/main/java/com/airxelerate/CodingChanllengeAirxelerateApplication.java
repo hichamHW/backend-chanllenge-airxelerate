@@ -2,8 +2,6 @@ package com.airxelerate;
 
 import com.airxelerate.dto.request.UserCreateRequest;
 import com.airxelerate.entity.Role;
-import com.airxelerate.entity.User;
-import com.airxelerate.repository.UserRepository;
 import com.airxelerate.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;

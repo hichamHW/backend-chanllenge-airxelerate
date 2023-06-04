@@ -8,7 +8,9 @@ import java.util.UUID;
 
 public interface RefreshTokenService {
      Optional<RefreshToken> findByToken(String token) ;
-     RefreshToken create(User user, String token) ;
+     Optional<RefreshToken> findByRefreshToken(String token) ;
+     RefreshToken update(RefreshToken token) ;
+     RefreshToken create(User user, String token,String rToken) ;
      RefreshToken verifyExpiration(RefreshToken token) ;
      int deleteByUserId(UUID id) ;
 }

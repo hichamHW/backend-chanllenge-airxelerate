@@ -5,6 +5,7 @@ import com.airxelerate.dto.request.UserCreateRequest;
 import com.airxelerate.dto.request.UserUpdateRequest;
 import com.airxelerate.dto.response.UserResponse;
 import com.airxelerate.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,7 +25,7 @@ public class UserController {
 
     @PostMapping
     @PreAuthorize("hasAnyAuthority('ADMIN')")
-    public ResponseEntity<UserResponse> create(@RequestBody UserCreateRequest userCreateRequest){
+    public ResponseEntity<UserResponse> create( @Valid  @RequestBody UserCreateRequest userCreateRequest){
         log.info("create user: {}", userCreateRequest);
         UserResponse created = this.userService.create(userCreateRequest);
         return ResponseEntity
@@ -41,7 +42,7 @@ public class UserController {
     }
     @PutMapping
     @PreAuthorize("hasAnyAuthority('ADMIN')")
-    public ResponseEntity<UserResponse> update(@RequestBody UserUpdateRequest userUpdateRequest){
+    public ResponseEntity<UserResponse> update(@Valid @RequestBody UserUpdateRequest userUpdateRequest){
         log.info("create user: {}", userUpdateRequest);
         UserResponse updated = this.userService.update(userUpdateRequest);
         return ResponseEntity.ok(updated);

@@ -6,6 +6,7 @@ import com.airxelerate.dto.request.TokenRefreshRequest;
 import com.airxelerate.dto.response.AuthenticatedResponse;
 import com.airxelerate.dto.response.UserResponse;
 import com.airxelerate.service.AuthService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -22,20 +23,20 @@ public class AuthController {
    private final AuthService authService;
 
     @PostMapping("login")
-    public ResponseEntity<AuthenticatedResponse> authenticate(  @RequestBody AuthRequest authRequest){
+    public ResponseEntity<AuthenticatedResponse> authenticate( @Valid @RequestBody AuthRequest authRequest){
         log.info("authenticate user : {}", authRequest);
        AuthenticatedResponse authenticated = this.authService.authenticate(authRequest);
         return ResponseEntity.ok(authenticated);
     }
     @PostMapping("signup")
-    public ResponseEntity<UserResponse> signup ( @RequestBody SignupRequest signupRequest){
+    public ResponseEntity<UserResponse> signup (@Valid @RequestBody SignupRequest signupRequest){
         log.info("signup user: {}", signupRequest);
         UserResponse created = this.authService.registerUser(signupRequest);
         return ResponseEntity.ok(created);
     }
 
     @PostMapping("refresh-token")
-    public ResponseEntity<String> refreshToken ( @RequestBody TokenRefreshRequest tokenRefreshRequest){
+    public ResponseEntity<String> refreshToken (@Valid @RequestBody TokenRefreshRequest tokenRefreshRequest){
         log.info("refresh Token user");
         String refreshToken = this.authService.refreshToken(tokenRefreshRequest);
         return ResponseEntity.ok(refreshToken);

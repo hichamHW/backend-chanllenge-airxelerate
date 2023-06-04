@@ -1,6 +1,5 @@
 package com.airxelerate.configuration;
 
-import com.airxelerate.exception.EntityNotFoundException;
 import com.airxelerate.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
